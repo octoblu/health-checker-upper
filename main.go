@@ -61,16 +61,17 @@ func run(context *cli.Context) {
 			os.Exit(0)
 		}
 
-		manager := vulcand.NewManager(vulcanURI)
+		manager, err := vulcand.NewManager(vulcanURI)
+		fatalIfError("error on vulcand.NewManager", err)
 		servers, err := manager.ShuffledServers()
-		fatalIfError("error on vulcanClient.ShuffledServers", err)
+		fatalIfError("error on manager.ShuffledServers", err)
 
 		for _, server := range servers {
 			ok, err := health.Check(server)
 			fatalIfError("error on healthcheck.Check", err)
 			if !ok {
-				err := manager.ServerRM(server)
-				fatalIfError("error on manager.ServerRM", err)
+				err := manager.ServerRm(server)
+				fatalIfError("error on manager.ServerRm", err)
 			}
 		}
 	}

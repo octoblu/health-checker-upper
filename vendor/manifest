@@ -2,9 +2,23 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/Sirupsen/logrus",
+			"repository": "https://github.com/Sirupsen/logrus",
+			"revision": "081307d9bc1364753142d5962fc1d795c742baaf",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/acsellers/inflections",
 			"repository": "https://github.com/acsellers/inflections",
 			"revision": "cb98bfe9e3ee28e8649778f5fbb2e95f54f71b39",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/codahale/hdrhistogram",
+			"repository": "https://github.com/codahale/hdrhistogram",
+			"revision": "360314142131c2043d1346f197f86435b287c6da",
 			"branch": "master",
 			"notests": true
 		},
@@ -13,6 +27,14 @@
 			"repository": "https://github.com/codegangsta/cli",
 			"revision": "71f57d300dd6a780ac1856c005c4b518cfd498ec",
 			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/coreos/go-etcd/etcd",
+			"repository": "https://github.com/coreos/go-etcd",
+			"revision": "003851be7bb0694fe3cc457a49529a19388ee7cf",
+			"branch": "master",
+			"path": "/etcd",
 			"notests": true
 		},
 		{
@@ -31,6 +53,99 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/garyburd/redigo/internal",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "8873b2f1995f59d4bcdd2b0dc9858e2cb9bf0c13",
+			"branch": "master",
+			"path": "/internal",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/redis",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "8873b2f1995f59d4bcdd2b0dc9858e2cb9bf0c13",
+			"branch": "master",
+			"path": "/redis",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gorilla/context",
+			"repository": "https://github.com/gorilla/context",
+			"revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gorilla/mux",
+			"repository": "https://github.com/gorilla/mux",
+			"revision": "0eeaf8392f5b04950925b8a69fe70f110fa7cbfc",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/iptools",
+			"repository": "https://github.com/mailgun/iptools",
+			"revision": "5349e5b95891ef5cb63ed867c31c5204cae280b2",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/log",
+			"repository": "https://github.com/mailgun/log",
+			"revision": "2f35a4607f1abf71f97f77f99b0de8493ef6f4ef",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/manners",
+			"repository": "https://github.com/mailgun/manners",
+			"revision": "fada45142db3f93097ca917da107aa3fad0ffcb5",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/metrics",
+			"repository": "https://github.com/mailgun/metrics",
+			"revision": "2b3c4565aafdcd40c8069e50de08ac5379787943",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/minheap",
+			"repository": "https://github.com/mailgun/minheap",
+			"revision": "7c28d80e2ada649fc8ab1a37b86d30a2633bd47c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/multibuf",
+			"repository": "https://github.com/mailgun/multibuf",
+			"revision": "565402cd71fbd9c12aa7e295324ea357e970a61e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/scroll",
+			"repository": "https://github.com/mailgun/scroll",
+			"revision": "f002bfcaaf217e63f09b2981c85d9deee7a85502",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/timetools",
+			"repository": "https://github.com/mailgun/timetools",
+			"revision": "fd192d755b00c968d312d23f521eb0cdc6f66bd0",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mailgun/ttlmap",
+			"repository": "https://github.com/mailgun/ttlmap",
+			"revision": "16b258d86efc53ac5cf3e550604f566c32624fab",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/mattn/go-colorable",
 			"repository": "https://github.com/mattn/go-colorable",
 			"revision": "9cbef7c35391cca05f15f8181dc0b18bc9736dbb",
@@ -45,6 +160,54 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/octoblu/go-logentry/logentry",
+			"repository": "https://github.com/octoblu/go-logentry",
+			"revision": "40a2facf003857830fa2ea00360ed2697b521296",
+			"branch": "master",
+			"path": "/logentry",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/vulcand-bundle/registry",
+			"repository": "https://github.com/octoblu/vulcand-bundle",
+			"revision": "5f4d18ca0209dcd3d1d5714ba0c9fb4f0d7ce784",
+			"branch": "master",
+			"path": "/registry",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/vulcand-job-logger/connection",
+			"repository": "https://github.com/octoblu/vulcand-job-logger",
+			"revision": "0563b3239ab4bf0c213c3199ff8d9fbe5d3f431c",
+			"branch": "master",
+			"path": "/connection",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/vulcand-job-logger/joblogger",
+			"repository": "https://github.com/octoblu/vulcand-job-logger",
+			"revision": "0563b3239ab4bf0c213c3199ff8d9fbe5d3f431c",
+			"branch": "master",
+			"path": "/joblogger",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/vulcand-job-logger/pool",
+			"repository": "https://github.com/octoblu/vulcand-job-logger",
+			"revision": "0563b3239ab4bf0c213c3199ff8d9fbe5d3f431c",
+			"branch": "master",
+			"path": "/pool",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/vulcand-job-logger/wrapper",
+			"repository": "https://github.com/octoblu/vulcand-job-logger",
+			"revision": "0563b3239ab4bf0c213c3199ff8d9fbe5d3f431c",
+			"branch": "master",
+			"path": "/wrapper",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/tj/go-debug",
 			"repository": "https://github.com/tj/go-debug",
 			"revision": "ff4a55a20a86994118644bbddc6a216da193cc13",
@@ -52,10 +215,136 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/ugorji/go/codec",
+			"repository": "https://github.com/ugorji/go",
+			"revision": "a396ed22fc049df733440d90efe17475e3929ccb",
+			"branch": "master",
+			"path": "/codec",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/visionmedia/go-debug",
 			"repository": "https://github.com/visionmedia/go-debug",
 			"revision": "ff4a55a20a86994118644bbddc6a216da193cc13",
 			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/cbreaker",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/cbreaker",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/connlimit",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/connlimit",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/memmetrics",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/memmetrics",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/ratelimit",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/ratelimit",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/stream",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/stream",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/trace",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/trace",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/oxy/utils",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "11677428db34c4a05354d66d028174d0e3c6e905",
+			"branch": "master",
+			"path": "/utils",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/predicate",
+			"repository": "https://github.com/vulcand/predicate",
+			"revision": "cb0bff91a7ab7cf7571e661ff883fc997bc554a3",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/route",
+			"repository": "https://github.com/vulcand/route",
+			"revision": "cb89d787ddbb1c5849a7ac9f79004c1fd12a4a32",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/vulcand/anomaly",
+			"repository": "https://github.com/vulcand/vulcand",
+			"revision": "475540bb016702d5b7cc4674e37f48ee3e144a69",
+			"branch": "master",
+			"path": "/anomaly",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/vulcand/api",
+			"repository": "https://github.com/vulcand/vulcand",
+			"revision": "475540bb016702d5b7cc4674e37f48ee3e144a69",
+			"branch": "master",
+			"path": "/api",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/vulcand/engine",
+			"repository": "https://github.com/vulcand/vulcand",
+			"revision": "475540bb016702d5b7cc4674e37f48ee3e144a69",
+			"branch": "master",
+			"path": "/engine",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/vulcand/plugin",
+			"repository": "https://github.com/vulcand/vulcand",
+			"revision": "475540bb016702d5b7cc4674e37f48ee3e144a69",
+			"branch": "master",
+			"path": "/plugin",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/vulcand/vulcand/router",
+			"repository": "https://github.com/vulcand/vulcand",
+			"revision": "475540bb016702d5b7cc4674e37f48ee3e144a69",
+			"branch": "master",
+			"path": "/router",
+			"notests": true
+		},
+		{
+			"importpath": "gopkg.in/mgo.v2/bson",
+			"repository": "https://gopkg.in/mgo.v2",
+			"revision": "b6e2fa371e64216a45e61072a96d4e3859f169da",
+			"branch": "v2",
+			"path": "/bson",
 			"notests": true
 		},
 		{
