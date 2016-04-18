@@ -5,6 +5,7 @@ import (
 
 	"github.com/octoblu/vulcand-bundle/registry"
 	"github.com/vulcand/vulcand/api"
+	"github.com/vulcand/vulcand/engine"
 )
 
 // Manager provides server management functions
@@ -38,8 +39,24 @@ func (manager *HTTPManager) ServerRm(server *Server) error {
 
 // Servers returns all the servers from vulcand
 func (manager *HTTPManager) Servers() ([]*Server, error) {
-	var servers []*Server
-	return servers, nil
+	var allServers []*Server
+
+	manager.client.GetBackends()
+	backends, err := manager.client.GetBackends()
+	if err != nil {
+		return allServers, err
+	}
+
+	for _, backend := range backends {
+		servers, err := manager.serversForBackend(backend)
+		if err != nil {
+			return allServers, err
+		}
+
+		allServers = append(allServers, servers...)
+	}
+
+	return allServers, nil
 }
 
 // ShuffledServers returns all the servers from vulcand
@@ -51,6 +68,22 @@ func (manager *HTTPManager) ShuffledServers() ([]*Server, error) {
 	}
 
 	return manager.shuffle(servers), nil
+}
+
+// servers returns all servers for a particular backend
+func (manager *HTTPManager) serversForBackend(backend engine.Backend) ([]*Server, error) {
+	var servers []*Server
+
+	vctlServers, err := manager.client.GetServers(backend.GetUniqueId())
+	if err != nil {
+		return servers, err
+	}
+
+	for _, vctlServer := range vctlServers {
+		servers = append(servers, newServerFromVCTL(vctlServer))
+	}
+
+	return servers, nil
 }
 
 // shuffle shuffles the servers in place, then returns the altered
