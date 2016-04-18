@@ -22,3 +22,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
+health-checker-upper
+entrypoint/health-checker-upper
