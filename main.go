@@ -6,11 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/coreos/go-semver/semver"
 	"github.com/fatih/color"
+	"github.com/octoblu/health-checker-upper/health"
+	"github.com/octoblu/health-checker-upper/vulcand"
 	De "github.com/tj/go-debug"
 )
 
@@ -23,52 +24,71 @@ func main() {
 	app.Action = run
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "example, e",
-			EnvVar: "HEALTH_CHECKER_UPPER_EXAMPLE",
-			Usage:  "Example string flag",
+			Name:   "vulcan-uri, u",
+			EnvVar: "HEALTH_CHECKER_UPPER_VULCAN_URI",
+			Usage:  "URI to vulcand's API endpoint (ex: http://127.0.0.1:8182)",
 		},
 	}
 	app.Run(os.Args)
 }
 
+func fatalIfError(msg string, err error) {
+	if err == nil {
+		return
+	}
+
+	log.Fatalln(msg, err.Error())
+}
+
 func run(context *cli.Context) {
-	example := getOpts(context)
+	vulcanURI := getOpts(context)
 
-	sigTerm := make(chan os.Signal)
-	signal.Notify(sigTerm, syscall.SIGTERM)
+	stopSignal := make(chan os.Signal)
+	signal.Notify(stopSignal, syscall.SIGTERM)
+	signal.Notify(stopSignal, syscall.SIGINT)
 
-	sigTermReceived := false
+	stopSignalReceived := false
 
 	go func() {
-		<-sigTerm
-		fmt.Println("SIGTERM received, waiting to exit")
-		sigTermReceived = true
+		<-stopSignal
+		fmt.Println("Stop Signal received, waiting to exit")
+		stopSignalReceived = true
 	}()
 
 	for {
-		if sigTermReceived {
+		if stopSignalReceived {
 			fmt.Println("I'll be back.")
 			os.Exit(0)
 		}
 
-		debug("health-checker-upper.loop: %v", example)
-		time.Sleep(1 * time.Second)
+		manager := vulcand.NewManager(vulcanURI)
+		servers, err := manager.ShuffledServers()
+		fatalIfError("error on vulcanClient.ShuffledServers", err)
+
+		for _, server := range servers {
+			ok, err := health.Check(server)
+			fatalIfError("error on healthcheck.Check", err)
+			if !ok {
+				err := manager.ServerRM(server)
+				fatalIfError("error on manager.ServerRM", err)
+			}
+		}
 	}
 }
 
 func getOpts(context *cli.Context) string {
-	example := context.String("example")
+	vulcanURI := context.String("vulcan-uri")
 
-	if example == "" {
+	if vulcanURI == "" {
 		cli.ShowAppHelp(context)
 
-		if example == "" {
-			color.Red("  Missing required flag --example or HEALTH_CHECKER_UPPER_EXAMPLE")
+		if vulcanURI == "" {
+			color.Red("  Missing required flag --vulcan-uri or HEALTH_CHECKER_UPPER_VULCAN_URI")
 		}
 		os.Exit(1)
 	}
 
-	return example
+	return vulcanURI
 }
 
 func version() string {
