@@ -18,7 +18,8 @@ type Manager interface {
 // HTTPManager implements manager over Vulcan's HTTP
 // API
 type HTTPManager struct {
-	client *api.Client
+	client          *api.Client
+	cachedFrontends map[string]bool
 }
 
 // NewManager constructs a new manager
@@ -28,8 +29,10 @@ func NewManager(uri string) (Manager, error) {
 		return nil, err
 	}
 
-	client := api.NewClient(uri, reg)
-	return &HTTPManager{client}, nil
+	return &HTTPManager{
+		client:          api.NewClient(uri, reg),
+		cachedFrontends: make(map[string]bool),
+	}, nil
 }
 
 // ServerRm removes the server from vulcan, using the vulcan API
@@ -51,6 +54,14 @@ func (manager *HTTPManager) Servers() ([]*Server, error) {
 	}
 
 	for _, backend := range backends {
+		hasFrontend, err := manager.hasFrontend(backend)
+		if err != nil {
+			return allServers, err
+		}
+		if !hasFrontend {
+			continue
+		}
+
 		servers, err := manager.serversForBackend(backend)
 		if err != nil {
 			return allServers, err
@@ -71,6 +82,33 @@ func (manager *HTTPManager) ShuffledServers() ([]*Server, error) {
 	}
 
 	return manager.shuffle(servers), nil
+}
+
+func (manager *HTTPManager) getFrontends() (map[string]bool, error) {
+	if len(manager.cachedFrontends) > 0 {
+		return manager.cachedFrontends, nil
+	}
+
+	frontends, err := manager.client.GetFrontends()
+	if err != nil {
+		return make(map[string]bool), err
+	}
+
+	for _, frontend := range frontends {
+		manager.cachedFrontends[frontend.BackendId] = true
+	}
+
+	return manager.cachedFrontends, nil
+}
+
+func (manager *HTTPManager) hasFrontend(backend engine.Backend) (bool, error) {
+	frontends, err := manager.getFrontends()
+	if err != nil {
+		return false, err
+	}
+
+	_, ok := frontends[backend.GetId()]
+	return ok, nil
 }
 
 // servers returns all servers for a particular backend
