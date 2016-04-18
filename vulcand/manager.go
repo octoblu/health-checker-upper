@@ -34,7 +34,10 @@ func NewManager(uri string) (Manager, error) {
 
 // ServerRm removes the server from vulcan, using the vulcan API
 func (manager *HTTPManager) ServerRm(server *Server) error {
-	return nil
+	backendKey := engine.BackendKey{Id: server.BackendID()}
+	serverKey := engine.ServerKey{BackendKey: backendKey, Id: server.ServerID()}
+
+	return manager.client.DeleteServer(serverKey)
 }
 
 // Servers returns all the servers from vulcand
@@ -80,7 +83,7 @@ func (manager *HTTPManager) serversForBackend(backend engine.Backend) ([]*Server
 	}
 
 	for _, vctlServer := range vctlServers {
-		servers = append(servers, newServerFromVCTL(vctlServer))
+		servers = append(servers, NewServer(backend, vctlServer))
 	}
 
 	return servers, nil

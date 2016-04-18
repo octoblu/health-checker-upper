@@ -67,8 +67,7 @@ func run(context *cli.Context) {
 		fatalIfError("error on manager.ShuffledServers", err)
 
 		for _, server := range servers {
-			ok, err := health.Check(server)
-			fatalIfError("error on healthcheck.Check", err)
+			ok := health.Check(server)
 			debug("server: %v (ok: %v)", server, ok)
 			if !ok {
 				err := manager.ServerRm(server)
