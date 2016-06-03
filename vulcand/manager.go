@@ -2,6 +2,7 @@ package vulcand
 
 import (
 	"math/rand"
+	"strings"
 
 	"github.com/octoblu/vulcand-bundle/registry"
 	"github.com/vulcand/vulcand/api"
@@ -40,7 +41,13 @@ func (manager *HTTPManager) ServerRm(server *Server) error {
 	backendKey := engine.BackendKey{Id: server.BackendID()}
 	serverKey := engine.ServerKey{BackendKey: backendKey, Id: server.ServerID()}
 
-	return manager.client.DeleteServer(serverKey)
+	err := manager.client.DeleteServer(serverKey)
+
+	if manager.isKeyNotFoundError(err) {
+		return nil
+	}
+
+	return err
 }
 
 // Servers returns all the servers from vulcand
@@ -125,6 +132,15 @@ func (manager *HTTPManager) serversForBackend(backend engine.Backend) ([]*Server
 	}
 
 	return servers, nil
+}
+
+func (manager *HTTPManager) isKeyNotFoundError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	errorMessage := err.Error()
+	return strings.HasPrefix(errorMessage, "Key not found")
 }
 
 // shuffle shuffles the servers in place, then returns the altered
