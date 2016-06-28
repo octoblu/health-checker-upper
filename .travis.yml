@@ -4,3 +4,5 @@ go:
 branches:
   only:
     - "/^v[0-9]/"
+install:
+  - echo "Using vendorized dependencies, nothing to do here"
