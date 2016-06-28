@@ -97,6 +97,9 @@ func (manager *HTTPManager) getFrontends() (map[string]bool, error) {
 	}
 
 	frontends, err := manager.client.GetFrontends()
+	if manager.isKeyNotFoundError(err) {
+		return make(map[string]bool), nil
+	}
 	if err != nil {
 		return make(map[string]bool), err
 	}
@@ -123,8 +126,11 @@ func (manager *HTTPManager) serversForBackend(backend engine.Backend) ([]*Server
 	var servers []*Server
 
 	vctlServers, err := manager.client.GetServers(backend.GetUniqueId())
+	if manager.isKeyNotFoundError(err) {
+		return make([]*Server, 0), nil
+	}
 	if err != nil {
-		return servers, err
+		return make([]*Server, 0), err
 	}
 
 	for _, vctlServer := range vctlServers {
