@@ -21,6 +21,22 @@ copy() {
   cp $TMP_DIR/$APP_NAME entrypoint/
 }
 
+docker_push(){
+  local version=$(get_version)
+  docker push "quay.io/octoblu/${APP_NAME}:v${version}"
+}
+
+docker_tag(){
+  local version=$(get_version)
+  docker tag "${IMAGE_NAME}:latest" "quay.io/octoblu/${APP_NAME}:v${version}"
+}
+
+get_version(){
+  grep 'var VERSION = ' version.go \
+  | sed -e 's/var VERSION = //g' \
+  | sed -e 's/"//g'
+}
+
 init() {
   rm -rf $TMP_DIR/ \
    && mkdir -p $TMP_DIR/
@@ -41,6 +57,12 @@ panic() {
   local message=$1
   echo $message
   exit 1
+}
+
+deploy() {
+  docker_build || panic "docker_build failed"
+  docker_tag   || panic "docker_tag failed"
+  docker_push  || panic "docker_push failed"
 }
 
 docker_build() {
@@ -79,6 +101,12 @@ main() {
     exit $?
   fi
 
+  if [ "$mode" == "deploy" ]; then
+    echo "deploy"
+    deploy
+    exit $?
+  fi
+
   if [ "$mode" == "docker" ]; then
     echo "Docker Build"
     docker_build
@@ -97,7 +125,7 @@ main() {
     exit $?
   fi
 
-  echo "Usage: ./build.sh local/docker/osx/release"
+  echo "Usage: ./build.sh local/deploy/docker/osx/release"
   exit 1
 }
 main $@
