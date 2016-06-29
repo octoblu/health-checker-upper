@@ -30,10 +30,15 @@ func NewManager(uri string) (Manager, error) {
 		return nil, err
 	}
 
+	return NewManagerWithClient(api.NewClient(uri, reg)), nil
+}
+
+// NewManagerWithClient constructs a new manager with a client
+func NewManagerWithClient(client *api.Client) Manager {
 	return &HTTPManager{
-		client:          api.NewClient(uri, reg),
+		client:          client,
 		cachedFrontends: make(map[string]bool),
-	}, nil
+	}
 }
 
 // ServerRm removes the server from vulcan, using the vulcan API
@@ -54,7 +59,6 @@ func (manager *HTTPManager) ServerRm(server *Server) error {
 func (manager *HTTPManager) Servers() ([]*Server, error) {
 	var allServers []*Server
 
-	manager.client.GetBackends()
 	backends, err := manager.client.GetBackends()
 	if err != nil {
 		return allServers, err
