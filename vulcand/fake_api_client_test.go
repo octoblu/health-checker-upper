@@ -1,6 +1,6 @@
 package vulcand_test
 
-import "github.com/mailgun/vulcand/engine"
+import "github.com/vulcand/vulcand/engine"
 
 type FakeApiClient struct {
 	DeleteServerCallCount      int
@@ -14,6 +14,11 @@ type FakeApiClient struct {
 	GetFrontendsCallCount        int
 	GetFrontendsReturnsFrontends []engine.Frontend
 	GetFrontendsReturnsError     error
+
+	GetServerCallCount      int
+	GetServerLastCalledWith engine.ServerKey
+	GetServerReturnsServer  *engine.Server
+	GetServerReturnsError   error
 
 	GetServersCallCount      int
 	GetServersLastCalledWith engine.BackendKey
@@ -39,6 +44,12 @@ func (client *FakeApiClient) GetBackends() ([]engine.Backend, error) {
 func (client *FakeApiClient) GetFrontends() ([]engine.Frontend, error) {
 	client.GetFrontendsCallCount++
 	return client.GetFrontendsReturnsFrontends, client.GetFrontendsReturnsError
+}
+
+func (client *FakeApiClient) GetServer(serverKey engine.ServerKey) (*engine.Server, error) {
+	client.GetServerCallCount++
+	client.GetServerLastCalledWith = serverKey
+	return client.GetServerReturnsServer, client.GetServerReturnsError
 }
 
 func (client *FakeApiClient) GetServers(backendKey engine.BackendKey) ([]engine.Server, error) {

@@ -3,8 +3,8 @@ package vulcand_test
 import (
 	"fmt"
 
-	"github.com/mailgun/vulcand/engine"
 	vulcand "github.com/octoblu/health-checker-upper/vulcand"
+	"github.com/vulcand/vulcand/engine"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -46,6 +46,28 @@ var _ = Describe("Client", func() {
 			It("Should return the error value", func() {
 				Expect(err).NotTo(BeNil())
 				Expect(err.Error()).To(Equal("No, I'm blind"))
+			})
+		})
+
+		Describe("When the wrapped client returns a 'Key not found' error", func() {
+			var err error
+
+			BeforeEach(func() {
+				wrappedClient.DeleteServerReturns = fmt.Errorf("Key not found (/foo/bar)")
+				err = sut.DeleteServer("hello", "is it me you're looking for?")
+			})
+
+			It("Should call wrapped.DeleteServer with an ServerKey", func() {
+				var serverKey engine.ServerKey
+				serverKey = wrappedClient.DeleteServerLastCalledWith
+
+				Expect(wrappedClient.DeleteServerCallCount).To(Equal(1))
+				Expect(serverKey.BackendKey.Id).To(Equal("hello"))
+				Expect(serverKey.Id).To(Equal("is it me you're looking for?"))
+			})
+
+			It("Should no error", func() {
+				Expect(err).To(BeNil())
 			})
 		})
 	})
@@ -144,6 +166,28 @@ var _ = Describe("Client", func() {
 				Expect(err.Error()).To(Equal("Baby got no back(end)"))
 			})
 		})
+
+		Describe("when the wrapped client returns a 'Key not found' error", func() {
+			var frontends []string
+			var err error
+
+			BeforeEach(func() {
+				wrappedClient.GetFrontendsReturnsError = fmt.Errorf("Key not found (/some/path)")
+				frontends, err = sut.GetFrontends()
+			})
+
+			It("should call wrappedClient.GetFrontends", func() {
+				Expect(wrappedClient.GetFrontendsCallCount).To(Equal(1))
+			})
+
+			It("should return an empty array", func() {
+				Expect(frontends).To(HaveLen(0))
+			})
+
+			It("should return no error", func() {
+				Expect(err).To(BeNil())
+			})
+		})
 	})
 
 	Describe("client.GetServers", func() {
@@ -194,6 +238,56 @@ var _ = Describe("Client", func() {
 			It("should return the error", func() {
 				Expect(err).NotTo(BeNil())
 				Expect(err.Error()).To(Equal("You got served"))
+			})
+		})
+
+		Describe("when the wrapped client returns an 'Key not found'", func() {
+			var servers []string
+			var err error
+
+			BeforeEach(func() {
+				wrappedClient.GetServersReturnsError = fmt.Errorf("Key not found (/vulcand/something)")
+				servers, err = sut.GetServers("meiru")
+			})
+
+			It("should call wrappedClient.GetServers", func() {
+				Expect(wrappedClient.GetServersCallCount).To(Equal(1))
+				Expect(wrappedClient.GetServersLastCalledWith.Id).To(Equal("meiru"))
+			})
+
+			It("should return an empty array", func() {
+				Expect(servers).To(HaveLen(0))
+			})
+
+			It("should not return the error", func() {
+				Expect(err).To(BeNil())
+			})
+		})
+	})
+
+	Describe("GetServerURL", func() {
+		Describe("When wrappedClient.GetServer returns an engine.Server", func() {
+			var url string
+			var err error
+
+			BeforeEach(func() {
+				wrappedClient.GetServerReturnsServer = &engine.Server{Id: "server", URL: "http://biz.apps"}
+				url, err = sut.GetServerURL("backend", "server")
+			})
+
+			It("Should call wrappedClient.GetServer", func() {
+				serverKey := wrappedClient.GetServerLastCalledWith
+				Expect(wrappedClient.GetServerCallCount).To(Equal(1))
+				Expect(serverKey.BackendKey.Id).To(Equal("backend"))
+				Expect(serverKey.Id).To(Equal("server"))
+			})
+
+			It("Should return the url", func() {
+				Expect(url).To(Equal("http://biz.apps"))
+			})
+
+			It("Should return no error", func() {
+				Expect(err).To(BeNil())
 			})
 		})
 	})

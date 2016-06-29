@@ -1,6 +1,10 @@
 package vulcand
 
-import "github.com/mailgun/vulcand/engine"
+import (
+	"strings"
+
+	"github.com/vulcand/vulcand/engine"
+)
 
 // Client defines the interface of the underlying vulcan client
 type Client interface {
@@ -8,6 +12,7 @@ type Client interface {
 	GetBackends() ([]string, error)
 	GetFrontends() ([]string, error)
 	GetServers(backendID string) ([]string, error)
+	GetServerURL(backendID, serverID string) (string, error)
 }
 
 // WrapperClient is an implementation of client that wraps
@@ -22,6 +27,7 @@ type WrappedClient interface {
 	DeleteServer(sk engine.ServerKey) error
 	GetBackends() ([]engine.Backend, error)
 	GetFrontends() ([]engine.Frontend, error)
+	GetServer(sk engine.ServerKey) (*engine.Server, error)
 	GetServers(bk engine.BackendKey) ([]engine.Server, error)
 }
 
@@ -34,7 +40,12 @@ func NewClient(client WrappedClient) Client {
 func (client *WrapperClient) DeleteServer(backendID, serverID string) error {
 	backendKey := engine.BackendKey{Id: backendID}
 	serverKey := engine.ServerKey{BackendKey: backendKey, Id: serverID}
-	return client.wrapped.DeleteServer(serverKey)
+
+	err := client.wrapped.DeleteServer(serverKey)
+	if client.isKeyNotFoundError(err) {
+		return nil
+	}
+	return err
 }
 
 // GetBackends returns the backends
@@ -54,6 +65,9 @@ func (client *WrapperClient) GetBackends() ([]string, error) {
 // GetFrontends returns the backends
 func (client *WrapperClient) GetFrontends() ([]string, error) {
 	engineFrontends, err := client.wrapped.GetFrontends()
+	if client.isKeyNotFoundError(err) {
+		return []string{}, nil
+	}
 	if err != nil {
 		return []string{}, err
 	}
@@ -69,6 +83,9 @@ func (client *WrapperClient) GetFrontends() ([]string, error) {
 func (client *WrapperClient) GetServers(backendID string) ([]string, error) {
 	backendKey := engine.BackendKey{Id: backendID}
 	engineServers, err := client.wrapped.GetServers(backendKey)
+	if client.isKeyNotFoundError(err) {
+		return []string{}, nil
+	}
 	if err != nil {
 		return []string{}, err
 	}
@@ -78,4 +95,26 @@ func (client *WrapperClient) GetServers(backendID string) ([]string, error) {
 		servers[i] = engineServer.GetId()
 	}
 	return servers, nil
+}
+
+// GetServerURL returns the url of a server
+func (client *WrapperClient) GetServerURL(backendID, serverID string) (string, error) {
+	backendKey := engine.BackendKey{Id: backendID}
+	serverKey := engine.ServerKey{BackendKey: backendKey, Id: serverID}
+
+	server, err := client.wrapped.GetServer(serverKey)
+	if err != nil {
+		return "", err
+	}
+
+	return server.URL, nil
+}
+
+func (client *WrapperClient) isKeyNotFoundError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	errorMessage := err.Error()
+	return strings.HasPrefix(errorMessage, "Key not found")
 }

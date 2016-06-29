@@ -2,11 +2,9 @@ package vulcand
 
 import (
 	"math/rand"
-	"strings"
 
 	"github.com/octoblu/vulcand-bundle/registry"
 	"github.com/vulcand/vulcand/api"
-	"github.com/vulcand/vulcand/engine"
 )
 
 // Manager provides server management functions
@@ -19,7 +17,7 @@ type Manager interface {
 // HTTPManager implements manager over Vulcan's HTTP
 // API
 type HTTPManager struct {
-	client          *api.Client
+	client          Client
 	cachedFrontends map[string]bool
 }
 
@@ -30,11 +28,12 @@ func NewManager(uri string) (Manager, error) {
 		return nil, err
 	}
 
-	return NewManagerWithClient(api.NewClient(uri, reg)), nil
+	client := NewClient(api.NewClient(uri, reg))
+	return NewManagerWithClient(client), nil
 }
 
 // NewManagerWithClient constructs a new manager with a client
-func NewManagerWithClient(client *api.Client) Manager {
+func NewManagerWithClient(client Client) Manager {
 	return &HTTPManager{
 		client:          client,
 		cachedFrontends: make(map[string]bool),
@@ -43,16 +42,7 @@ func NewManagerWithClient(client *api.Client) Manager {
 
 // ServerRm removes the server from vulcan, using the vulcan API
 func (manager *HTTPManager) ServerRm(server *Server) error {
-	backendKey := engine.BackendKey{Id: server.BackendID()}
-	serverKey := engine.ServerKey{BackendKey: backendKey, Id: server.ServerID()}
-
-	err := manager.client.DeleteServer(serverKey)
-
-	if manager.isKeyNotFoundError(err) {
-		return nil
-	}
-
-	return err
+	return manager.client.DeleteServer(server.BackendID(), server.ServerID())
 }
 
 // Servers returns all the servers from vulcand
@@ -101,56 +91,48 @@ func (manager *HTTPManager) getFrontends() (map[string]bool, error) {
 	}
 
 	frontends, err := manager.client.GetFrontends()
-	if manager.isKeyNotFoundError(err) {
-		return make(map[string]bool), nil
-	}
 	if err != nil {
 		return make(map[string]bool), err
 	}
 
 	for _, frontend := range frontends {
-		manager.cachedFrontends[frontend.BackendId] = true
+		manager.cachedFrontends[frontend] = true
 	}
 
 	return manager.cachedFrontends, nil
 }
 
-func (manager *HTTPManager) hasFrontend(backend engine.Backend) (bool, error) {
+func (manager *HTTPManager) hasFrontend(backend string) (bool, error) {
 	frontends, err := manager.getFrontends()
 	if err != nil {
 		return false, err
 	}
 
-	_, ok := frontends[backend.GetId()]
+	_, ok := frontends[backend]
 	return ok, nil
 }
 
 // servers returns all servers for a particular backend
-func (manager *HTTPManager) serversForBackend(backend engine.Backend) ([]*Server, error) {
-	var servers []*Server
+func (manager *HTTPManager) serversForBackend(backendID string) ([]*Server, error) {
+	empty := []*Server{}
 
-	vctlServers, err := manager.client.GetServers(backend.GetUniqueId())
-	if manager.isKeyNotFoundError(err) {
-		return make([]*Server, 0), nil
-	}
+	serverIDs, err := manager.client.GetServers(backendID)
 	if err != nil {
-		return make([]*Server, 0), err
+		return empty, err
 	}
 
-	for _, vctlServer := range vctlServers {
-		servers = append(servers, NewServer(backend, vctlServer))
+	servers := []*Server{}
+
+	for _, serverID := range serverIDs {
+		url, err := manager.client.GetServerURL(backendID, serverID)
+		if err != nil {
+			return empty, nil
+		}
+
+		servers = append(servers, NewServer(backendID, serverID, url))
 	}
 
 	return servers, nil
-}
-
-func (manager *HTTPManager) isKeyNotFoundError(err error) bool {
-	if err == nil {
-		return false
-	}
-
-	errorMessage := err.Error()
-	return strings.HasPrefix(errorMessage, "Key not found")
 }
 
 // shuffle shuffles the servers in place, then returns the altered

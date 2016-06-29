@@ -5,4 +5,4 @@ branches:
   only:
     - "/^v[0-9]/"
 install: echo "Using vendorized dependencies, nothing to do here"
-script: go test
+script: go test github.com/octoblu/health-checker-upper/vulcand
