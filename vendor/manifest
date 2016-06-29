@@ -69,6 +69,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/golang/protobuf/proto",
+			"repository": "https://github.com/golang/protobuf",
+			"revision": "b3e26a40c2321140ad7c7d031030d3c9e3cdecc7",
+			"branch": "master",
+			"path": "/proto",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/gorilla/context",
 			"repository": "https://github.com/gorilla/context",
 			"revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
@@ -205,6 +213,20 @@
 			"revision": "0563b3239ab4bf0c213c3199ff8d9fbe5d3f431c",
 			"branch": "master",
 			"path": "/wrapper",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/onsi/ginkgo",
+			"repository": "https://github.com/onsi/ginkgo",
+			"revision": "059cec02d342bab423425a99b191186a03255e9e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/onsi/gomega",
+			"repository": "https://github.com/onsi/gomega",
+			"revision": "0df7b7fdb38123c12a1f569f0affb2c2a7bd72cf",
+			"branch": "master",
 			"notests": true
 		},
 		{
