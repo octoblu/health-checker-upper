@@ -56,7 +56,6 @@ func run(context *cli.Context) {
 	}()
 
 	for {
-		debug("")
 		if stopSignalReceived {
 			fmt.Println("I'll be back.")
 			os.Exit(0)
