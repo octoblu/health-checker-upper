@@ -116,5 +116,5 @@ func (client *WrapperClient) isKeyNotFoundError(err error) bool {
 	}
 
 	errorMessage := err.Error()
-	return strings.HasPrefix(errorMessage, "Key not found")
+	return strings.Contains(errorMessage, "Key not found")
 }

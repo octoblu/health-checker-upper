@@ -49,11 +49,11 @@ var _ = Describe("Client", func() {
 			})
 		})
 
-		Describe("When the wrapped client returns a 'Key not found' error", func() {
+		Describe("When the wrapped client returns a '100: Key not found' error", func() {
 			var err error
 
 			BeforeEach(func() {
-				wrappedClient.DeleteServerReturns = fmt.Errorf("Key not found (/foo/bar)")
+				wrappedClient.DeleteServerReturns = fmt.Errorf("100: Key not found (/foo/bar)")
 				err = sut.DeleteServer("hello", "is it me you're looking for?")
 			})
 
@@ -167,12 +167,12 @@ var _ = Describe("Client", func() {
 			})
 		})
 
-		Describe("when the wrapped client returns a 'Key not found' error", func() {
+		Describe("when the wrapped client returns a '100: Key not found' error", func() {
 			var frontends []string
 			var err error
 
 			BeforeEach(func() {
-				wrappedClient.GetFrontendsReturnsError = fmt.Errorf("Key not found (/some/path)")
+				wrappedClient.GetFrontendsReturnsError = fmt.Errorf("100: Key not found (/some/path)")
 				frontends, err = sut.GetFrontends()
 			})
 
@@ -241,12 +241,12 @@ var _ = Describe("Client", func() {
 			})
 		})
 
-		Describe("when the wrapped client returns an 'Key not found'", func() {
+		Describe("when the wrapped client returns an '100: Key not found'", func() {
 			var servers []string
 			var err error
 
 			BeforeEach(func() {
-				wrappedClient.GetServersReturnsError = fmt.Errorf("Key not found (/vulcand/something)")
+				wrappedClient.GetServersReturnsError = fmt.Errorf("100: Key not found (/vulcand/something)")
 				servers, err = sut.GetServers("meiru")
 			})
 
