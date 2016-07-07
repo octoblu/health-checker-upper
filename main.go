@@ -72,6 +72,10 @@ func run(context *cli.Context) {
 		}
 
 		for _, server := range servers {
+			if stopSignalReceived {
+				fmt.Println("I'll be back.")
+				os.Exit(0)
+			}
 			ok := health.Check(server)
 			debug("server: %v (ok: %v)", server.ServerID(), ok)
 			if !ok {
