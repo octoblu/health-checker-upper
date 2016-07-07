@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/coreos/go-semver/semver"
@@ -64,7 +65,11 @@ func run(context *cli.Context) {
 		manager, err := vulcand.NewManager(vulcanURI)
 		fatalIfError("error on vulcand.NewManager", err)
 		servers, err := manager.ShuffledServers()
-		fatalIfError("error on manager.ShuffledServers", err)
+		if err != nil {
+			log.Println("error on manager.ShuffledServers", err.Error(), "Retrying in 5s")
+			time.Sleep(5 * time.Second)
+			continue
+		}
 
 		for _, server := range servers {
 			ok := health.Check(server)
